@@ -1,5 +1,5 @@
 import User from './Users';
 
-export default {
+export {
   User
 }

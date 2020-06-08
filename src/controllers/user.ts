@@ -1,12 +1,13 @@
 import { Router } from 'express';
-import User from '../models/Users';
+import { User } from '../models';
 import config from '../config';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { body } from 'express-validator';
 import {ApiResponse} from '../utils/response';
 
 // Login user
-export const signin = async (req, res, next) => {
+export const login = async (req, res, next) => {
   try{
     const email = req.body.email;
     const user = await User.findOne({ email: email });
@@ -29,13 +30,12 @@ export const signin = async (req, res, next) => {
         expiresIn: config.jwtExpirySeconds, 
         user:user}));
   } catch(err){
-    console.log(err);
     res.status(500).send(new ApiResponse(500, 'error', err.message));
   }
 }
 
 // Register new user
-export const signup = async (req, res, next) => {
+export const register = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
   const hashPwd = await bcrypt.hash(password, 10);

@@ -17,6 +17,3 @@ mongoose.connect('mongodb://localhost:27017/onlinemarket', {useNewUrlParser: tru
     });
   })
   .catch(err=>console.log(err));
-
-
-
