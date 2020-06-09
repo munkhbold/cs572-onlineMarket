@@ -5,6 +5,11 @@ const productSchema = new Schema({
     type: String,
     required: true
   },
+  sellerId: {
+    type: Types.ObjectId,
+    ref: 'User',
+    required: true
+  },
   description: {
     type: String,
     required: true
