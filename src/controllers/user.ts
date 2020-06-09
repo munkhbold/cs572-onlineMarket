@@ -45,3 +45,12 @@ export const register = async (req, res, next) => {
   });
   res.status(200).send(new ApiResponse(200, 'success', { user: newUser}));
 }
+
+
+export const updateCart = async (req, res, next) => {
+  const user = req.user;
+  const productId = req.body.productId;
+  const quantity = req.body.quantity;
+  await user.updateCart(productId, quantity);
+  res.status(200).send(new ApiResponse(200, 'success', {user: user}));
+}

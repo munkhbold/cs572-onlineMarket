@@ -30,5 +30,23 @@ const userSchema = new Schema({
   }
 });
 
+userSchema.methods.updateCart = async function(prodId, quant) {
+  if (quant === 0) {
+    this.cart.items = this.cart.items.filter(item => item.productId.toString() !== prodId);
+  }
+  else {
+    let item = this.cart.items.find(item => item.productId.toString() === prodId);
+
+    if (item === undefined) {
+      this.cart.items.push({productId: prodId, quantity: quant});
+    }
+    else {
+      item.quantity = quant;
+    }
+
+  }
+  await this.save();
+}
+
 const User = model('User', userSchema);
 export default User;
