@@ -1,4 +1,5 @@
 import { Schema, model, Types } from 'mongoose';
+import { Product } from './';
 
 const orderSchema = new Schema({
   clientId: {
@@ -57,6 +58,42 @@ const orderSchema = new Schema({
     default: Date.now
   }
 });
+
+orderSchema.statics.placeOrder =  async (user)=>{
+  const items = user.cart.items;
+  const productIds = items.map(item=>item.productId);
+  // Group by seller id
+  const sellers = await Product.aggregate([
+    {$match: { _id: {$in: productIds}}},
+    {$group:  
+      { _id: "$sellerId"},
+      products: {$push: {id: '$_id', unitPrice: '$unitPrice'}}
+    },
+    {$project: { sellerId: '$_id', _id:0}}
+  ]);
+  let totalPrice = 0;
+  // Create order in each seller
+  for(let seller of sellers){
+    const items = [];
+    for(let product of seller.products){
+      const qty = items.find(i=>i.productId === product.id).quantity;
+      totalPrice += qty * product.unitPrice;
+      items.push({
+        quantity: qty,
+        productId: product.id,
+        unitPrice: product.unitPrice
+      });
+    }
+
+    await Order.create({
+      clientId: user._id,
+      sellerId: seller.sellerId,
+      shippingAddress: {},
+      totalPrice,
+      items
+    });
+  }
+}
 
 const Order = model('Order', orderSchema);
 export default Order;
