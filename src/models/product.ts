@@ -48,5 +48,12 @@ const productSchema = new Schema({
   }]
 });
 
+productSchema.statics.approveProduct = async function(prodId) {
+  const product = await Product.findById(Types.ObjectId(prodId));
+  if (!product) throw new Error("Product not found to add in cart");
+  product.isApproved = true;
+  return product.save();
+}
+
 const Product = model('Product', productSchema);
 export default Product;
