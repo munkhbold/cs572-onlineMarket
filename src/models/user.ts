@@ -43,7 +43,6 @@ userSchema.methods.updateCart = async function(prodId, quant) {
     else {
       item.quantity = quant;
     }
-
   }
   await this.save();
 }
