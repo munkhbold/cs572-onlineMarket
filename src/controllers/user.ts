@@ -21,7 +21,12 @@ export const login = async (req, res, next) => {
       return;        
     }
 
-    const token = jwt.sign({data: email}, config.jwtKey, {
+    const payload = {
+      _id: user._id,
+      email: user.email
+    }
+
+    const token = jwt.sign({data: payload}, config.jwtKey, {
       expiresIn: config.jwtExpirySeconds
     });
 
