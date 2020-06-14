@@ -1,5 +1,24 @@
 import { Schema, model, Types } from 'mongoose';
 
+const addressSchema = new Schema({
+  state: {
+    type: String,
+    required: true
+  },
+  city: {
+    type: String,
+    required: true
+  },
+  zipCode: {
+    type: String,
+    required: true
+  },
+  street: {
+    type: String,
+    required: true
+  }
+}, {strict: false});
+
 const userSchema = new Schema({
   email: {
     type: String,
@@ -29,22 +48,7 @@ const userSchema = new Schema({
     totalPrice: Number
   },
   address: {
-    state: {
-      type: String,
-      required: true
-    },
-    city: {
-      type: String,
-      required: true
-    },
-    zipCode: {
-      type: String,
-      required: true
-    },
-    street: {
-      type: String,
-      required: true
-    }
+    type: addressSchema,
   }
 });
 
