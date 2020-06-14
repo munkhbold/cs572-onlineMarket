@@ -89,24 +89,19 @@ const validatePassword = (password: string) => {
 }
 
 userSchema.statics.createUser = async function(email: string, password: string, role: string){
-  if (!validateEmail(email)){
+  if (!validateEmail(email))
     throw new Error('Email is incorrect');
-  }
 
-
-  if (await User.exists({ email })){
+  if (await User.exists({ email }))
     throw new Error('Email is already registered');
-  }
-
   
   if (!validatePassword(password)){
     throw new Error(`Your password must contain at least one special character and one number.
     Password length should be less then 6 letters`)
   }
 
-  if( ROLES.indexOf(role) == -1 ){
+  if( ROLES.indexOf(role) == -1 )
     throw new Error('Role is incorrect');
-  }
   
   const hashPwd = await bcrypt.hash(password, 10);
   return User.create({
@@ -118,26 +113,26 @@ userSchema.statics.createUser = async function(email: string, password: string, 
 
 userSchema.statics.authenticate = async function(email: string, password: string){
   const user = await User.findOne({ email: email });
-    if( !user )
-      throw new Error('Username or password is not correct');
+  if( !user )
+    throw new Error('Username or password is not correct');
 
-    const isValid = await bcrypt.compare(password, user.password);
-    if( !isValid )
-      throw new Error('Username or password is not correct');
+  const isValid = await bcrypt.compare(password, user.password);
+  if( !isValid )
+    throw new Error('Username or password is not correct');
 
-    const payload = {
-      _id: user._id,
-      email: user.email
-    }
+  const payload = {
+    _id: user._id,
+    email: user.email
+  }
 
-    const token = jwt.sign({data: payload}, config.jwtKey, {
-      expiresIn: config.jwtExpirySeconds
-    });
+  const token = jwt.sign({data: payload}, config.jwtKey, {
+    expiresIn: config.jwtExpirySeconds
+  });
 
-    return {
-      token: token, 
-      expiresIn: config.jwtExpirySeconds, 
-      user: user };
+  return {
+    token: token, 
+    expiresIn: config.jwtExpirySeconds, 
+    user: user };
 }
 
 const User = model('User', userSchema);
