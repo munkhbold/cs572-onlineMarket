@@ -16,6 +16,24 @@ const orderSchema = new Schema({
     type: String,
     default: 'ordered'
   },
+  billingAddress: {
+    state: {
+      type: String,
+      required: true
+    },
+    city: {
+      type: String,
+      required: true
+    },
+    zipCode: {
+      type: String,
+      required: true
+    },
+    street: {
+      type: String,
+      required: true
+    }
+  },
   shippingAddress: {
     state: {
       type: String,
@@ -59,27 +77,38 @@ const orderSchema = new Schema({
   }
 });
 
-orderSchema.statics.placeOrder =  async (user)=>{
+orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=>{
+  if(billingAddress == null && user.address == null){
+    throw new Error("Billing address is required");
+  }
+
+  if(billingAddress == null && user.address != null){
+    billingAddress = user.address;
+  }
+
   const items = user.cart.items;
   const productIds = items.map(item=>item.productId);
   // Group by seller id
   const sellers = await Product.aggregate([
     {$match: { _id: {$in: productIds}}},
-    {$group:  
-      { _id: "$sellerId"},
+    {$group: {
+      _id: "$sellerId",
       products: {$push: {id: '$_id', unitPrice: '$unitPrice'}}
+      }
     },
-    {$project: { sellerId: '$_id', _id:0}}
+    {$project: { sellerId: '$_id', _id: 0, products: 1}}
   ]);
+
   let totalPrice = 0;
+  let newItems = [];
   // Create order in each seller
   for(let seller of sellers){
-    const items = [];
+    newItems = []
     for(let product of seller.products){
-      const qty = items.find(i=>i.productId === product.id).quantity;
-      totalPrice += qty * product.unitPrice;
-      items.push({
-        quantity: qty,
+      const quantity = items.find(i=>i.productId.toString() == product.id.toString()).quantity;
+      totalPrice += quantity * product.unitPrice;
+      newItems.push({
+        quantity: quantity,
         productId: product.id,
         unitPrice: product.unitPrice
       });
@@ -88,9 +117,10 @@ orderSchema.statics.placeOrder =  async (user)=>{
     await Order.create({
       clientId: user._id,
       sellerId: seller.sellerId,
-      shippingAddress: {},
+      items: newItems,
+      billingAddress,
+      shippingAddress,
       totalPrice,
-      items
     });
   }
 }
