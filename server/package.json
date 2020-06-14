@@ -1,18 +1,37 @@
 {
-    "name": "project",
-    "version": "1.0.0",
-    "description": "",
-    "main": "app.js",
-    "scripts": {
-        "test": "echo \"Error: no test specified\" && exit 1",
-        "start": "nodemon app.js"
-    },
-    "author": "Ankhtuya",
-    "license": "ISC",
-    "dependencies": {
-        "body-parser": "^1.19.0",
-        "cors": "^2.8.5",
-        "express": "^4.17.1",
-        "mongoose": "^5.9.18"
-    }
+  "name": "onlinemarket",
+  "version": "1.0.0",
+  "description": "",
+  "main": "app.js",
+  "scripts": {
+    "build": "tsc",
+    "dev": "NODE_ENV=development nodemon -e ts src/app.ts --exec ts-node",
+    "start": "nodemon ./dist/app.js",
+    "prod": "yarn build && yarn start",
+    "format": "prettier-standard '**/*.ts'"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/munkhbold/cs572-onlineMarket.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/munkhbold/cs572-onlineMarket/issues"
+  },
+  "homepage": "https://github.com/munkhbold/cs572-onlineMarket#readme",
+  "dependencies": {
+    "bcrypt": "^4.0.1",
+    "cors": "^2.8.5",
+    "express": "^4.17.1",
+    "express-validator": "^6.5.0",
+    "jsonwebtoken": "^8.5.1",
+    "mongoose": "^5.9.17",
+    "nodemon": "^2.0.4",
+    "yarn": "^1.22.4"
+  },
+  "devDependencies": {
+    "ts-lint": "^4.5.1",
+    "typescript": "^3.9.5"
+  }
 }
