@@ -12,7 +12,6 @@ app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
   req.user = await User.findById("5edf2d01030403353a813212");
-  console.log(req.user);
   next();
 })
 
