@@ -1,7 +1,9 @@
 import { Router } from 'express';
-import { approveProduct } from '../controllers/product';
+import { approveProduct, addReview, approveReview} from '../controllers/product';
 const router = Router();
 
-router.put('/:id/approve', approveProduct)
+router.put('/:productId/approve', approveProduct)
+router.post('/:productId/reviews', addReview)
+router.put('/:productId/reviews/:reviewId/approve', approveReview)
 
 export default router;
