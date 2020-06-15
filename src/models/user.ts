@@ -84,7 +84,7 @@ const validateEmail = (email: string) => {
 }
 
 const validatePassword = (password: string) => {
-  const res = /^(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
+  const res = /^(?=.*[0-9])[a-zA-Z0-9!@#$%^&*]{6,16}$/;
   return res.test(password);
 }
 
@@ -125,7 +125,7 @@ userSchema.statics.authenticate = async function(email: string, password: string
     email: user.email
   }
 
-  const token = jwt.sign({data: payload}, config.jwtKey, {
+  const token = jwt.sign({payload}, config.jwtKey, {
     expiresIn: config.jwtExpirySeconds
   });
 
