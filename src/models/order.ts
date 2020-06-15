@@ -1,6 +1,12 @@
 import { Schema, model, Types } from 'mongoose';
 import { Product } from './';
 
+const ORDERED = 'ordered';
+const SHIPPED = 'shipped';
+const RECEIVED = 'received';
+const CANCELED = 'canceled';
+const STATUSES = [ORDERED, SHIPPED, RECEIVED, CANCELED];
+
 const orderSchema = new Schema({
   clientId: {
     type: Types.ObjectId,
@@ -12,9 +18,10 @@ const orderSchema = new Schema({
     ref: 'User',
     required: true
   },
-  status: { // ordered, shipped, received, canceled
+  status: {
     type: String,
-    default: 'ordered'
+    enum: STATUSES,
+    default: ORDERED
   },
   billingAddress: {
     state: {
@@ -126,6 +133,19 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=
   for(let seller of sellers){
     await createOrder(cartItems, seller, user, billingAddress, shippingAddress);
   }
+}
+
+orderSchema.statics.cancelOrderById = async (orderId, userId)=>{
+  const order = await Order.findById(orderId);
+  if( !order )
+    throw new Error(`Can't find order with id ${orderId}`)
+  else if (order.status !== ORDERED)
+    throw new Error(`Order already has been proceeded`);
+  else if (order.clientId.toString() !== userId.toString() && order.sellerId.toString() !== userId.toString())
+    throw new Error(`Cant't find order with buyerId ${userId}`);
+
+  order.status = CANCELED;
+  return order.save();
 }
 
 const Order = model('Order', orderSchema);
