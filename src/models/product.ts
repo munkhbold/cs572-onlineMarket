@@ -3,6 +3,12 @@ import { Schema, model, Types } from 'mongoose';
 const productSchema = new Schema({
   name: {
     type: String,
+    required: true,
+    minlength:4,
+    maxlength:30
+  },
+  category: {
+    type: String,
     required: true
   },
   sellerId: {
@@ -14,12 +20,19 @@ const productSchema = new Schema({
     type: String,
     required: true
   },
-  imageUrl: String,
+  imageUrl: {
+    type: Object,
+    required: true
+  },
   isApproved: {
     type: Boolean,
     default: false
   },
   unitPrice: {
+    type: Number,
+    required: true
+  },
+  qty: {
     type: Number,
     required: true
   },

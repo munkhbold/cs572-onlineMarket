@@ -1,13 +1,13 @@
 import users from './users';
-import products from './products';
 import orders from './orders';
-
+import products from './products';
+import seller from './seller';
 import { Router } from 'express';
 
 const router = Router();
 
 router.use('/', users);
-router.use('/products', products);
-
 router.use('/orders', orders);
+router.use('/products', products);
+router.use('/seller', seller);
 export default router;
