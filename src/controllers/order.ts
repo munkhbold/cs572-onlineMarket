@@ -13,10 +13,17 @@ export const createOrder = async (req, res, next) => {
   const billingAddress = req.body.billingAddress;
   try{
     await Order.placeOrder(user, billingAddress, shippingAddress);
-  } catch(validationError){
-    res.status(401).send(new ApiResponse(401, 'error', { errors: parseErrors(validationError.errors) }));  
+  } catch(error){
+    res.status(401).send(new ApiResponse(401, 'error', { errors: parseErrors(error) }));  
     return;
   }
   
   res.status(200).send(new ApiResponse(200, 'success', null));
+}
+
+
+export const getOrdersByUser = async (req, res, next)=>{
+  const clientId = req.params.userId;
+  const orders = await Order.find({ clientId })
+  res.status(200).send(new ApiResponse(200, 'success', orders));
 }
