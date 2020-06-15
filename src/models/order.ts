@@ -12,7 +12,7 @@ const orderSchema = new Schema({
     ref: 'User',
     required: true
   },
-  status: { // ordered, shipped, received, canceled, way-delivered
+  status: { // ordered, shipped, received, canceled
     type: String,
     default: 'ordered'
   },

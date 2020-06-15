@@ -1,4 +1,4 @@
 export default  {
   jwtKey: "onlinemarket",
-  jwtExpirySeconds: 3000,
+  jwtExpirySeconds: 60 * 60 * 24,
 };
