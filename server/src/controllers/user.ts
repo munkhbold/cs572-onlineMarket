@@ -43,7 +43,7 @@ export const login = async (req, res, next) => {
 export const register = async (req, res, next) => {
   const email = req.body.email;
   const password = req.body.password;
-  const role = req.body.roleType;
+  const role = req.body.role;
   const hashPwd = await bcrypt.hash(password, 10);
   const newUser = await User.create({
     email: email,

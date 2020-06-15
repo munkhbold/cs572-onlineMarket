@@ -31,13 +31,15 @@ export const getCategories = (req, res, next) => {
             res.status(200).send(new ApiResponse(200, 'success', result));
         })
         .catch(err => {
-            res.status(500).send(new ApiResponse(500, 'error', err));
+            console.log(err.message);
+            res.status(500).send(new ApiResponse(500, 'error', err.message));
         });
 };
 
 export const getProductsByCategory = (req, res, next) => {
-    Product.find({ category: req.params.category })
+    Product.find({category: {$regex: req.params.category, $options:"i" }})
         .then(products => {
+            console.log(products);
             res.status(200).send(new ApiResponse(200, 'success', products));
         })
         .catch(err => {

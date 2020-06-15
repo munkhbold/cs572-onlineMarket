@@ -3,7 +3,9 @@ import { Schema, model, Types } from 'mongoose';
 const productSchema = new Schema({
   name: {
     type: String,
-    required: true
+    required: true,
+    minlength:4,
+    maxlength:30
   },
   category: {
     type: String,

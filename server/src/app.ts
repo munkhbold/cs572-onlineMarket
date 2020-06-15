@@ -11,7 +11,7 @@ app.use(cors());
 app.use(bodyParser.json());
 
 app.use(async (req, res, next) => {
-  req.user = await User.findById("5edf2d01030403353a813212");
+  req.user = await User.findById("5ee6e4e51924092d88d5bea7");
   next();
 })
 
@@ -19,13 +19,13 @@ app.use(routes);
 
 
 
-mongoose.connect('mongodb://localhost:27017/onlinemarket', {
-    useCreateIndex: true, 
-    useNewUrlParser: true, 
-    useUnifiedTopology: true
-  }).then(()=>{
-    app.listen(3000, ()=>{
-      console.log("Server is running on 3000 ...");
-    });
-  })
-  .catch(err=>console.log(err));
+  mongoose.connect('mongodb://localhost:27017/onlineshopping', {
+      useCreateIndex: true, 
+      useNewUrlParser: true, 
+      useUnifiedTopology: true
+    }).then(()=>{
+      app.listen(3000, ()=>{
+        console.log("Server is running on 3000 ...");
+      });
+    })
+    .catch(err=>console.log(err));
