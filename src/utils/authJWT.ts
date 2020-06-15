@@ -1,7 +1,7 @@
-import {ApiResponse} from './response';
-import jwt from 'jsonwebtoken';
+import { ApiResponse } from './response';
+import * as jwt from 'jsonwebtoken';
 import config from '../config';
-import {User} from '../models';
+import { User } from '../models';
 
 export const verifyToken = (req, res, next)=>{
     const authHeader = req.headers['authorization'];
@@ -11,10 +11,10 @@ export const verifyToken = (req, res, next)=>{
     const token = authHeader.split(' ')[1];
 
     jwt.verify(token, config.jwtKey, async (err, decoded) => {
-        req.user = await User.findById(decoded._id);
         if (err) {
             return res.status(401).send(new ApiResponse(401, 'error', { errors: ['Unauthorized!'] }));
         }
+        req.user = await User.findById(decoded.payload._id);
         next();
     });
 }
