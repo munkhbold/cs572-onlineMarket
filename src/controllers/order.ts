@@ -13,8 +13,8 @@ export const createOrder = async (req, res, next) => {
   const billingAddress = req.body.billingAddress;
   try{
     await Order.placeOrder(user, billingAddress, shippingAddress);
-  }catch(validationError){
-    res.status(200).send(new ApiResponse(401, 'error', { errors: parseErrors(validationError.errors) }));  
+  } catch(validationError){
+    res.status(401).send(new ApiResponse(401, 'error', { errors: parseErrors(validationError.errors) }));  
     return;
   }
   
