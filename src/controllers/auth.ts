@@ -1,11 +1,5 @@
-import { Router } from 'express';
 import { User } from '../models';
-import config from '../config';
-import * as jwt from 'jsonwebtoken';
-
-import { body } from 'express-validator';
 import {ApiResponse} from '../utils/response';
-import { parseErrors } from '../utils/responseErrors';
 
 // Login user
 export const login = async (req, res, next) => {

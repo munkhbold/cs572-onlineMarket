@@ -77,6 +77,30 @@ const orderSchema = new Schema({
   }
 });
 
+// Create order in each seller
+const createOrder = async(items, seller, user, billingAddress, shippingAddress)=>{
+  const newItems = []
+  let totalPrice = 0;
+  for(let product of seller.products){
+    const quantity = items.find(i=>i.productId.toString() == product.id.toString()).quantity;
+    totalPrice += quantity * product.unitPrice;
+    newItems.push({
+      quantity: quantity,
+      productId: product.id,
+      unitPrice: product.unitPrice
+    });
+  }
+
+  return Order.create({
+    clientId: user._id,
+    sellerId: seller.sellerId,
+    items: newItems,
+    billingAddress,
+    shippingAddress,
+    totalPrice,
+  });
+}
+
 orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=>{
   if(billingAddress == null && user.address == null){
     throw new Error("Billing address is required");
@@ -86,8 +110,8 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=
     billingAddress = user.address;
   }
 
-  const items = user.cart.items;
-  const productIds = items.map(item=>item.productId);
+  const cartItems = user.cart.items;
+  const productIds = cartItems.map(item=>item.productId);
   // Group by seller id
   const sellers = await Product.aggregate([
     {$match: { _id: {$in: productIds}}},
@@ -99,29 +123,8 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=
     {$project: { sellerId: '$_id', _id: 0, products: 1}}
   ]);
 
-  let totalPrice = 0;
-  let newItems = [];
-  // Create order in each seller
   for(let seller of sellers){
-    newItems = []
-    for(let product of seller.products){
-      const quantity = items.find(i=>i.productId.toString() == product.id.toString()).quantity;
-      totalPrice += quantity * product.unitPrice;
-      newItems.push({
-        quantity: quantity,
-        productId: product.id,
-        unitPrice: product.unitPrice
-      });
-    }
-
-    await Order.create({
-      clientId: user._id,
-      sellerId: seller.sellerId,
-      items: newItems,
-      billingAddress,
-      shippingAddress,
-      totalPrice,
-    });
+    await createOrder(cartItems, seller, user, billingAddress, shippingAddress);
   }
 }
 
