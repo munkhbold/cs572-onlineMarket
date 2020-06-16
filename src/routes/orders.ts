@@ -4,7 +4,7 @@ import { verifyBuyer, verifySeller } from '../middlewares/verifyTokenMiddleware'
 const router = Router();
 
 router.get('/', verifyBuyer, getOrdersByUser);
-router.post('/create', verifyBuyer, createOrder);
+router.post('/', verifyBuyer, createOrder);
 router.put('/:orderId', verifySeller, updateOrderStatus)
 
 

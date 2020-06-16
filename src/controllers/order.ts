@@ -11,10 +11,13 @@ export const createOrder = async (req, res, next) => {
   
   const shippingAddress = req.body.shippingAddress;
   const billingAddress = req.body.billingAddress;
+  const isPoint = req.body.isPoint;
+  console.log(isPoint);
+
   try{
-    await Order.placeOrder(user, billingAddress, shippingAddress);
+    await Order.placeOrder(user, billingAddress, shippingAddress, isPoint);
   } catch(error){
-    res.status(401).send(new ApiResponse(401, 'error', { errors: parseErrors(error) }));  
+    res.status(401).send(new ApiResponse(401, 'error', { errors: [parseErrors(error)] }));  
     return;
   }
 
