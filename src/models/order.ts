@@ -4,6 +4,21 @@ import { ORDER_STATUS } from '../constants'
 
 const STATUSES = [ORDER_STATUS.CANCELED, ORDER_STATUS.ORDERED, ORDER_STATUS.RECEIVED, ORDER_STATUS.SHIPPED]
 
+const getTotalPrice = async (cartItems, productIds) => {
+
+  const products = await Product.find({ _id: {$in: productIds}});
+  // console.log(productIdAndPrice);
+  let totalPrice = 0;
+  products.forEach(e => {
+    totalPrice += e.unitPrice * cartItems.find(i => i.productId.toString() === e._id.toString()).quantity;
+  });
+  return totalPrice;
+}
+
+const priceToPoint = (price) => {
+  return price * 10;
+}
+
 const orderSchema = new Schema({
   clientId: {
     type: Types.ObjectId,
@@ -86,7 +101,7 @@ const createOrder = async(items, seller, user, billingAddress, shippingAddress)=
   const newItems = []
   let totalPrice = 0;
   for(let product of seller.products){
-    const quantity = items.find(i=>i.productId.toString() == product.id.toString()).quantity;
+    const quantity = items.find(i=>i.productId.toString() === product.id.toString()).quantity;
     totalPrice += quantity * product.unitPrice;
     newItems.push({
       quantity: quantity,
@@ -105,7 +120,8 @@ const createOrder = async(items, seller, user, billingAddress, shippingAddress)=
   });
 }
 
-orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=>{
+
+orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress, isPoint)=>{
   if(billingAddress == null && user.address == null){
     throw new Error("Billing address is required");
   }
@@ -116,6 +132,15 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=
 
   const cartItems = user.cart.items;
   const productIds = cartItems.map(item=>item.productId);
+
+  if (isPoint) {
+    const totalPrice = await getTotalPrice(cartItems, productIds);
+    console.log(priceToPoint(totalPrice));
+    if (priceToPoint(totalPrice) > (!user.point ? 0 : user.point)) throw new Error("User does not have enough points!");
+    user.point -= priceToPoint(totalPrice);
+    await user.save();
+  }
+
   // Group by seller id
   const sellers = await Product.aggregate([
     {$match: { _id: {$in: productIds}}},
@@ -153,6 +178,7 @@ orderSchema.statics.updateOrderStatus = async (orderId, userId, changeStatus)=> 
   
   return order.save();
 }
+
 
 const Order = model('Order', orderSchema);
 export default Order;
