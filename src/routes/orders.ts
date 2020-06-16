@@ -1,10 +1,11 @@
 import { Router } from 'express';
 import { createOrder, getOrdersByUser, updateOrderStatus } from '../controllers/order';
+import { verifyBuyer, verifySeller } from '../middlewares/verifyTokenMiddleware';
 const router = Router();
 
-router.get('/', getOrdersByUser);
-router.post('/create', createOrder);
-router.put('/:orderId', updateOrderStatus)
+router.get('/', verifyBuyer, getOrdersByUser);
+router.post('/create', verifyBuyer, createOrder);
+router.put('/:orderId', verifySeller, updateOrderStatus)
 
 
 // router.post('/order/:orderId/cancel', orderCancel);
