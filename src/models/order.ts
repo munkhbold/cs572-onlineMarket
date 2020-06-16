@@ -1,11 +1,8 @@
 import { Schema, model, Types } from 'mongoose';
 import { Product } from './';
+import { ORDER_STATUS } from '../constants'
 
-const ORDERED = 'ordered';
-const SHIPPED = 'shipped';
-const RECEIVED = 'received';
-const CANCELED = 'canceled';
-const STATUSES = [ORDERED, SHIPPED, RECEIVED, CANCELED];
+const STATUSES = [ORDER_STATUS.CANCELED, ORDER_STATUS.ORDERED, ORDER_STATUS.RECEIVED, ORDER_STATUS.SHIPPED]
 
 const orderSchema = new Schema({
   clientId: {
@@ -21,7 +18,7 @@ const orderSchema = new Schema({
   status: {
     type: String,
     enum: STATUSES,
-    default: ORDERED
+    default: ORDER_STATUS.ORDERED
   },
   billingAddress: {
     state: {
@@ -135,16 +132,25 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress)=
   }
 }
 
-orderSchema.statics.cancelOrderById = async (orderId, userId)=>{
-  const order = await Order.findById(orderId);
-  if( !order )
-    throw new Error(`Can't find order with id ${orderId}`)
-  else if (order.status !== ORDERED)
-    throw new Error(`Order already has been proceeded`);
-  else if (order.clientId.toString() !== userId.toString() && order.sellerId.toString() !== userId.toString())
-    throw new Error(`Cant't find order with buyerId ${userId}`);
+orderSchema.statics.updateOrderStatus = async (orderId, userId, changeStatus)=> {
 
-  order.status = CANCELED;
+  if (!STATUSES.find(status => status === changeStatus)) throw new Error('Status not found!');
+
+  const order = await Order.findById(orderId);
+
+  if (!order) throw new Error(`Can't find order with id ${orderId}`);
+
+  if (order.clientId.toString() !== userId.toString() && order.sellerId.toString() !== userId.toString()) 
+    throw new Error(`Cant't find order with buyerId or sellerId ${userId}`);
+  
+    
+  if (order.status === ORDER_STATUS.CANCELED) throw new Error('Order has been already canceled!')
+
+  if (changeStatus === ORDER_STATUS.CANCELED && order.status !== ORDER_STATUS.ORDERED) 
+    throw new Error(`Order already has been proceeded`);
+
+  order.status = changeStatus;
+  
   return order.save();
 }
 

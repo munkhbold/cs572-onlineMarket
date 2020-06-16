@@ -2,8 +2,9 @@ import { Schema, model, Types } from 'mongoose';
 import config from '../config';
 import * as jwt from 'jsonwebtoken';
 import * as bcrypt from 'bcrypt';
+import { USER_ROLES } from '../constants';
 
-const ROLES = ['admin', 'buyer', 'seller'];
+const ROLES = [USER_ROLES.ADMIN, USER_ROLES.BUYER, USER_ROLES.SELLER];
 
 const addressSchema = new Schema({
   state: {
@@ -40,7 +41,7 @@ const userSchema = new Schema({
   role: {
     type: String,
     enum: ROLES,
-    default: 'buyer'
+    default: USER_ROLES.BUYER
   },
   cart: {
     items: [ {

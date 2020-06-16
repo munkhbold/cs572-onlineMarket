@@ -1,4 +1,6 @@
 import { Schema, model, Types } from 'mongoose';
+import { Order } from './';
+import { ORDER_STATUS } from '../constants';
 
 const productSchema = new Schema({
   name: {
@@ -33,8 +35,7 @@ const productSchema = new Schema({
     required: true
   },
   qty: {
-    type: Number,
-    required: true
+    type: Number
   },
   star: {
     totalRating: Number,
@@ -89,6 +90,21 @@ productSchema.statics.approveReview = async function(prodId, reviewId) {
   review.isShow = true;
   
   return product.save();
+}
+
+productSchema.statics.removeProductById = async function(prodId, sellerId) {
+
+  const product = await Product.findById(prodId);
+  if (!product) throw new Error("The product does not exist!");
+  if (product.sellerId.toString() !== sellerId.toString()) throw new Error("SellerId does not match!");
+
+  const order = await Order.findOne({
+    "items.productId": Types.ObjectId(prodId)
+  });
+  
+  if (order && order.status === ORDER_STATUS.RECEIVED) throw new Error("The product was already purchased, so could not deleted!")
+
+  return Product.findByIdAndDelete(prodId);
 }
 
 const Product = model('Product', productSchema);

@@ -1,23 +1,25 @@
 import { Router } from 'express';
 import {
-    list,
-    getById,
-    getCategories,
-    getProductsByCategory,
     approveProduct,
     addReview,
-    approveReview
+    approveReview,
+    getProductById,
+    getProducts,
+    createProduct,
+    updateProduct,
+    removeProductById
 } from '../controllers/product';
 
 const router = Router();
 
-router.get('/', list);
-router.get('/categories', getCategories);
-router.get('/categories/:category', getProductsByCategory);
-router.get('/:productId', getById);
-
 router.put('/:productId/approve', approveProduct)
 router.post('/:productId/reviews', addReview)
 router.put('/:productId/reviews/:reviewId/approve', approveReview)
+
+router.get('/', getProducts);
+router.post('/', createProduct);
+router.get('/:productId', getProductById);
+router.put('/:productId', updateProduct);
+router.delete('/:productId', removeProductById);
 
 export default router;

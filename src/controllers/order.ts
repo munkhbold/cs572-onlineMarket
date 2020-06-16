@@ -27,11 +27,12 @@ export const getOrdersByUser = async (req, res, next)=>{
   res.status(200).send(new ApiResponse(200, 'success', orders));
 }
 
-export const cancelOrderById = async (req, res, next)=>{
+export const updateOrderStatus = async (req, res, next)=>{
   const buyerId = req.user._id;
   const orderId = req.params.orderId;
+  const status = req.body.status;
   try{
-    const order = await Order.cancelOrderById(orderId, buyerId);
+    const order = await Order.updateOrderStatus(orderId, buyerId, status);
     res.status(200).send(new ApiResponse(200, 'success', order));
   }catch(e){
     res.status(401).send(new ApiResponse(401, 'error', {errors: [e.message]}));
