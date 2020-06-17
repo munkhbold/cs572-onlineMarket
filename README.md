@@ -1,6 +1,6 @@
-# CS572 MWA - Online Market web application
+# CS572 MWA - Online Market final project
 
-The project was developed by using technologies: Node.js | Express.js | MongoDBusing. 
+The project was developed by using Node.js | Express.js | MongoDB. 
 
 ### Server Install and Run
 
