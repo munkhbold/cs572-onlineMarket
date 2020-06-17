@@ -1,15 +1,25 @@
 [{
   "_id": {
-    "$oid": "5ee6e4e51924092d88d5bea7"
-  },
-  "email": "ank@gmail.com",
-  "password": "$2b$10$2OozFZ4IEV/l9WyrueGJLuDfkSIETCWAynQgr5uNphwuszvZ3qXPi",
-  "role": "seller"
-},{
-  "_id": {
     "$oid": "5ee6eead17a67552e0513476"
   },
   "email": "anna@gmail.com",
   "password": "$2b$10$2OozFZ4IEV/l9WyrueGJLuDfkSIETCWAynQgr5uNphwuszvZ3qXPi",
   "role": "seller"
+},{
+  "_id": {
+    "$oid": "5ee94a46b41f5329c88847a6"
+  },
+  "email": "admin@gmail.com",
+  "password": "$2b$10$tzvOpivLflNlbVpXtAvx9ecMaVBPPLnUZ2ADVdtd8oJOtt8F0cIgu",
+  "role": "admin"
+},{
+  "_id": {
+    "$oid": "5ee94aafb41f5329c88847a7"
+  },
+  "cart": {
+    "items": []
+  },
+  "email": "tom@gmail.com",
+  "password": "$2b$10$8LAnuNYg.ItjhqMZ3bN6OeU/C8Sf7fJ7.KlaBFiCoDksMMf6W5dAq",
+  "role": "buyer"
 }]
