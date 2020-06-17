@@ -5,6 +5,7 @@ The project was developed by using technologies: Node.js | Express.js | MongoDBu
 ## Server Install and Run
 
 <code>
-npm install <br/>
+npm install
+
 yarn dev
 </code>
