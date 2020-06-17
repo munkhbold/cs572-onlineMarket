@@ -2,10 +2,9 @@
 
 Back-end: The project was developed by using Node.js | Express.js | MongoDB. 
 
-### Server Install and Run
+#### Server Install and Run
 
-<code>
+```
 npm install
-
 yarn dev
-</code>
+```
