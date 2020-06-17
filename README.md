@@ -2,7 +2,7 @@
 
 The project was developed by using technologies: Node.js | Express.js | MongoDBusing. 
 
-## Server Install and Run
+### Server Install and Run
 
 <code>
 npm install
