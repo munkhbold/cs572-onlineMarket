@@ -123,7 +123,10 @@ userSchema.statics.authenticate = async function(email: string, password: string
 
   const payload = {
     _id: user._id,
-    email: user.email
+    email: user.email,
+    role: user.role,
+    firstname: user.firstname,
+    lastname: user.lastname
   }
 
   const token = jwt.sign({payload}, config.jwtKey, {
