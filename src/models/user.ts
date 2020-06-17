@@ -96,8 +96,9 @@ userSchema.statics.createUser = async function(email: string, password: string, 
   if (await User.exists({ email }))
     throw new Error('Email is already registered');
   
+
   if (!validatePassword(password)){
-    throw new Error(`The password must contains at least one number`)
+    throw new Error(`The password must contains at least a number and 6 letters`)
   }
 
   if( ROLES.indexOf(role) == -1 )
