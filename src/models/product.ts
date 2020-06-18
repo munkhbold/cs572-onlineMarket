@@ -9,10 +9,7 @@ const productSchema = new Schema({
     minlength:4,
     maxlength:30
   },
-  category: {
-    type: String,
-    required: true
-  },
+  category: String,
   sellerId: {
     type: Types.ObjectId,
     ref: 'User',
