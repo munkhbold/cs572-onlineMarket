@@ -32,7 +32,7 @@ export const getOrdersByUser = async (req, res, next)=>{
       path: 'productId',
       model: 'Product'
     }
-  });
+  }).populate('clientId');
   res.status(200).send(new ApiResponse(200, 'success', orders));
 }
 
