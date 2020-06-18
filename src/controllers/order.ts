@@ -26,7 +26,13 @@ export const createOrder = async (req, res, next) => {
 
 export const getOrdersByUser = async (req, res, next)=>{
   const clientId = req.user._id;
-  const orders = await Order.find({ clientId })
+  const orders = await Order.find({ clientId }).populate({
+    path: 'items',
+    populate: {
+      path: 'productId',
+      model: 'Product'
+    }
+  });
   res.status(200).send(new ApiResponse(200, 'success', orders));
 }
 
