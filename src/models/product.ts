@@ -62,10 +62,16 @@ const productSchema = new Schema({
   }]
 });
 
+productSchema.statics.getPrductsByIds = async function(prodIds) {
+  const products = await Product.find({_id: {$in: prodIds}});
+  if (!products) throw new Error("Products are not found");
+  return products;
+}
+
 productSchema.statics.approveProduct = async function(prodId) {
   const product = await Product.findById(Types.ObjectId(prodId));
 
-  if (!product) throw new Error("Product not found to approve");
+  if (!product) throw new Error("Product is not found to approve");
   product.isApproved = true;
   
   return product.save();
