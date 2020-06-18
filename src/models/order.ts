@@ -138,7 +138,6 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress, 
     console.log(priceToPoint(totalPrice));
     if (priceToPoint(totalPrice) > (!user.point ? 0 : user.point)) throw new Error("User does not have enough points!");
     user.point -= priceToPoint(totalPrice);
-    await user.save();
   }
 
   // Group by seller id
@@ -155,6 +154,8 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress, 
   for(let seller of sellers){
     await createOrder(cartItems, seller, user, billingAddress, shippingAddress);
   }
+  user.cart.items = [];
+  await user.save();
 }
 
 orderSchema.statics.updateOrderStatus = async (orderId, userId, changeStatus)=> {
