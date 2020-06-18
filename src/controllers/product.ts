@@ -6,12 +6,10 @@ export const createProduct = async (req, res, next) => {
   try {  
     const product = await Product.create({
       name: req.body.name,
-      category: req.body.category,
       sellerId: req.user._id,
       description: req.body.description,
       imageUrl: req.body.imageUrl,
-      unitPrice: req.body.unitPrice,
-      qty: req.body.qty
+      unitPrice: req.body.unitPrice
     });
     res.status(200).send(new ApiResponse(200, 'success', {product}));
   } catch (e) {
