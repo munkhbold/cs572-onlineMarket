@@ -135,9 +135,7 @@ orderSchema.statics.placeOrder =  async (user, billingAddress, shippingAddress, 
 
   if (isPoint) {
     const totalPrice = await getTotalPrice(cartItems, productIds);
-    console.log(priceToPoint(totalPrice));
-    if (priceToPoint(totalPrice) > (!user.point ? 0 : user.point)) throw new Error("User does not have enough points!");
-    user.point -= priceToPoint(totalPrice);
+    user.point = Math.max(0, (!user.point ? 0 : user.point) - priceToPoint(totalPrice));
   }
 
   // Group by seller id

@@ -125,6 +125,7 @@ userSchema.statics.authenticate = async function(email: string, password: string
     _id: user._id,
     email: user.email,
     role: user.role,
+    point: !user.point ? 0 : user.point,
     firstname: user.firstname,
     lastname: user.lastname
   }
