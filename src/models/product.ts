@@ -90,7 +90,7 @@ productSchema.statics.approveReview = async function(prodId, reviewId) {
 
   let review = product.reviews.find(review => review._id.toString() === reviewId);
   if (review === undefined) throw new Error("Review not found to approve review");
-  review.isShow = true;
+  review.isShow = !review.isShow;
   
   return product.save();
 }
