@@ -36,6 +36,33 @@ export const getOrdersByUser = async (req, res, next)=>{
   res.status(200).send(new ApiResponse(200, 'success', orders));
 }
 
+
+export const getOrders = async (req, res, next)=>{
+  const query = {};
+  if(req.query.sellerId){
+    query['sellerId'] = req.query.sellerId;
+  }
+  const orders = await Order.find(query).populate({
+    path: 'items',
+    populate: {
+      path: 'productId',
+      model: 'Product'
+    }
+  }).populate('clientId');
+  res.status(200).send(new ApiResponse(200, 'success', orders));
+}
+
+
+export const cancelOrderByUser = async (req, res, next)=>{
+  const buyerId = req.user._id;
+  const orderId = req.params.orderId;
+  try{
+    const order = await Order.updateOrderStatus(orderId, buyerId, 'canceled');
+    res.status(200).send(new ApiResponse(200, 'success', order));
+  }catch(e){
+    res.status(401).send(new ApiResponse(401, 'error', {errors: [e.message]}));
+  }
+}
 export const updateOrderStatus = async (req, res, next)=>{
   const buyerId = req.user._id;
   const orderId = req.params.orderId;
