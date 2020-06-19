@@ -35,7 +35,13 @@ export const updateProduct = async (req, res, next) => {
 
 export const getProductById = async (req, res, next) => {
   try {  
-    const product = await Product.findById(req.params.productId);
+    const product = await Product.findById(req.params.productId).populate({
+      path: 'reviews',
+      populate: {
+        path: 'clientId',
+        model: 'User'
+      }
+    });
     res.status(200).send(new ApiResponse(200, 'success', {product}));
   } catch (e) {
     res.status(400).send(new ApiResponse(400, 'error', { errors: [e.message] }));  
@@ -97,7 +103,6 @@ export const addReview = async (req, res, next) => {
 export const approveReview = async (req, res, next) => {
   const productId = req.params.productId;
   const reviewId = req.params.reviewId;
-  console.log(reviewId);
   try {
     const responseResult = await Product.approveReview(productId, reviewId);
     res.status(200).send(new ApiResponse(200, 'success', {product: responseResult}));
